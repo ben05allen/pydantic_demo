@@ -2,16 +2,9 @@ import csv
 from schedules import Sale
 
 
-def main():
-    parsed_rows = list()
-    with open("Sales.csv") as csv_file:
-        reader = csv.DictReader(csv_file)
-        for row in reader:
-            parsed_rows.append(Sale(**row))
-
-    for parsed_row in parsed_rows:
+parsed_rows = list()
+with open("Sales.csv") as csv_file:
+    reader = csv.DictReader(csv_file)
+    for row in reader:
+        parsed_rows.append(parsed_row := Sale(**row))
         print(parsed_row)
-
-
-if __name__ == "__main__":
-    main()

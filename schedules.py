@@ -43,7 +43,7 @@ class Sale(BaseModel):
 
     validate_dates = field_validator("date", mode="before")(wrangle_dates)
 
-    strip_units = field_validator("size_kg", mode="before")(drop_units)
+    validate_units = field_validator("size_kg", mode="before")(drop_units)
 
     @model_validator(mode="after")
     def calc_total(self):
