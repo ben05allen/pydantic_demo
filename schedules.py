@@ -1,6 +1,6 @@
 import datetime
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, root_validator
 
 
 
@@ -64,16 +64,16 @@ class Sale(BaseModel):
 
         raise ValueError(f"Format of date {value} does not match any known pattern.")
 
+
     @validator('size_kg', pre=True)
     def drop_units(value):
         if isinstance(value, str):
             return float(value.replace("kg", "").replace(",", "").strip())
         return value
 
-    
 
-    # validate_units = field_validator("size_kg", mode="before")(drop_units)
-
-    # @model_validator(mode="after")
-    # def calc_total(self):
-    #     self.total_sale = self.amount * self.unit_price
+    @root_validator
+    def calc_total(cls, values):
+        prod = values.get("amount", 0) * values.get("unit_price", 0)
+        values['total_sale'] = prod        
+        return values
