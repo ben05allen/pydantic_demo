@@ -3,9 +3,6 @@ import datetime
 from pydantic import BaseModel, Field, validator, root_validator
 
 
-
-
-
 def wrangle_dates(value):
     formats = [
         "%Y-%m-%d",
@@ -31,7 +28,6 @@ def drop_units(value):
 
 
 class Sale(BaseModel):
-
     date: datetime.date
     customer_name: str
     size_kg: float = Field(alias="Size (kg)")
@@ -39,14 +35,14 @@ class Sale(BaseModel):
     unit_price: int
     total_sale: int | None = None
 
-    
     class Config:
-        
         @classmethod
-        def alias_generator(cls, string: str) -> str:  # this needs to be called "alias_generator"
+        def alias_generator(
+            cls, string: str
+        ) -> str:  # this needs to be called "alias_generator"
             return " ".join(word.capitalize() for word in string.split("_"))
 
-    @validator('date', pre=True)
+    @validator("date", pre=True)
     def wrangle_dates(value):
         formats = [
             "%Y-%m-%d",
@@ -64,16 +60,14 @@ class Sale(BaseModel):
 
         raise ValueError(f"Format of date {value} does not match any known pattern.")
 
-
-    @validator('size_kg', pre=True)
+    @validator("size_kg", pre=True)
     def drop_units(value):
         if isinstance(value, str):
             return float(value.replace("kg", "").replace(",", "").strip())
         return value
 
-
     @root_validator
     def calc_total(cls, values):
         prod = values.get("amount", 0) * values.get("unit_price", 0)
-        values['total_sale'] = prod        
+        values["total_sale"] = prod
         return values
