@@ -37,9 +37,7 @@ class Sale(BaseModel):
 
     class Config:
         @classmethod
-        def alias_generator(
-            cls, string: str
-        ) -> str:  # this needs to be called "alias_generator"
+        def alias_generator(cls, string: str) -> str:
             return " ".join(word.capitalize() for word in string.split("_"))
 
     @validator("date", pre=True)
